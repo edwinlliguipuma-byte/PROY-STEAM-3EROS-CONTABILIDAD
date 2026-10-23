@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador Matemáticas 3ro Contabilidad | Msc. Edwin Lliguipuma</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,sans-serif}
+body{background:linear-gradient(135deg,#0f4c3a 0%,#1a7a5a 50%,#2d9d78 100%);min-height:100vh;padding:20px;color:#333}
+.container{max-width:1100px;margin:0 auto;background:rgba(255,255,255,0.98);border-radius:25px;box-shadow:0 25px 80px rgba(0,0,0,0.3);overflow:hidden}
+header{background:linear-gradient(135deg,#0f4c3a 0%,#1a7a5a 50%,#d4af37 100%);color:white;padding:35px 30px;text-align:center;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.15) 0%,transparent 70%);animation:rotate 25s linear infinite}
+@keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.header-content{position:relative;z-index:1}
+.logo-container{display:flex;align-items:center;justify-content:center;gap:15px;margin-bottom:12px}
+.logo-icon{width:65px;height:65px;background:rgba(255,255,255,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.2em;border:3px solid rgba(255,255,255,0.4);backdrop-filter:blur(10px)}
+header h1{font-size:1.7em;margin-bottom:6px;text-shadow:2px 2px 4px rgba(0,0,0,0.3)}
+header p{opacity:0.95;font-size:0.95em;margin:4px 0}
+.badge{display:inline-block;background:rgba(212,175,55,0.3);color:#fff;padding:7px 18px;border-radius:25px;margin-top:12px;font-size:0.88em;border:1px solid rgba(255,255,255,0.4);backdrop-filter:blur(10px)}
+.content{padding:35px 30px}
+
+.welcome-title{font-size:2em;color:#0f4c3a;margin-bottom:8px;text-align:center;background:linear-gradient(135deg,#0f4c3a,#d4af37);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.welcome-subtitle{color:#666;font-size:1.05em;margin-bottom:25px;text-align:center}
+.info-banner{background:linear-gradient(135deg,#d4af37 0%,#b8941f 100%);color:white;padding:18px;border-radius:15px;margin:20px 0;text-align:center;box-shadow:0 10px 30px rgba(212,175,55,0.3)}
+.info-banner h3{margin-bottom:8px;font-size:1.2em}
+.timer-banner{background:linear-gradient(135deg,#0f4c3a 0%,#1a7a5a 100%);color:#fff;padding:15px;border-radius:15px;margin:20px 0;text-align:center;font-weight:bold;font-size:1.1em;box-shadow:0 5px 15px rgba(15,76,58,0.3);border:2px solid #d4af37}
+.input-group{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:20px 0}
+@media(max-width:600px){.input-group{grid-template-columns:1fr}}
+input,select{width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:12px;font-size:1em;transition:0.3s;background:white}
+input:focus,select:focus{border-color:#1a7a5a;outline:none;box-shadow:0 0 0 3px rgba(26,122,90,0.15)}
+.member-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:10px;align-items:center}
+.btn{background:linear-gradient(135deg,#0f4c3a 0%,#1a7a5a 100%);color:white;border:none;padding:14px 38px;border-radius:12px;font-size:1.05em;font-weight:bold;cursor:pointer;transition:0.3s;margin:10px 5px;box-shadow:0 5px 15px rgba(15,76,58,0.3);border:2px solid transparent}
+.btn:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(15,76,58,0.4);border-color:#d4af37}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.btn-secondary{background:linear-gradient(135deg,#455a64,#607d8b);box-shadow:0 5px 15px rgba(69,90,100,0.3)}
+.btn-gold{background:linear-gradient(135deg,#d4af37 0%,#b8941f 100%);color:#0f4c3a;box-shadow:0 5px 15px rgba(212,175,55,0.4)}
+.btn-gold:hover{border-color:#0f4c3a}
+.center{text-align:center}
+
+.class-container{display:none}
+.class-nav{display:flex;gap:10px;margin-bottom:25px;flex-wrap:wrap;justify-content:center}
+.class-nav button{background:white;border:2px solid #1a7a5a;color:#1a7a5a;padding:10px 20px;border-radius:25px;cursor:pointer;font-weight:600;transition:0.3s}
+.class-nav button.active{background:linear-gradient(135deg,#0f4c3a,#1a7a5a);color:white;border-color:#d4af37}
+.class-nav button:hover{transform:translateY(-2px)}
+.class-section{display:none;animation:fadeIn 0.5s}
+.class-section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.class-card{background:white;border-radius:18px;padding:28px;margin:20px 0;border-left:6px solid #d4af37;box-shadow:0 10px 30px rgba(0,0,0,0.08)}
+.class-card h2{color:#0f4c3a;margin-bottom:15px;font-size:1.5em}
+.class-card h3{color:#1a7a5a;margin:15px 0 10px 0;font-size:1.2em}
+.class-card p,.class-card li{line-height:1.8;margin:8px 0;color:#333}
+.class-card ul,.class-card ol{margin-left:25px}
+.formula-box{background:linear-gradient(135deg,#f0f9f4,#e8f5ee);border:2px solid #1a7a5a;border-radius:12px;padding:20px;margin:15px 0;text-align:center;font-size:1.3em;font-family:'Cambria Math','Times New Roman',serif;color:#0f4c3a;font-weight:bold}
+.example-box{background:#fffbea;border-left:5px solid #d4af37;padding:18px;border-radius:10px;margin:15px 0}
+.example-box strong{color:#8b6914}
+.graph-container{background:#fafbfc;border:2px solid #e0e0e0;border-radius:12px;padding:15px;margin:18px 0;text-align:center}
+.graph-container svg{max-width:100%;height:auto}
+.graph-title{font-size:0.9em;color:#666;margin-bottom:8px;font-weight:600}
+.highlight{background:linear-gradient(135deg,#0f4c3a,#1a7a5a);color:white;padding:3px 10px;border-radius:6px;font-weight:bold}
+.steam-badge{display:inline-block;background:linear-gradient(135deg,#d4af37,#b8941f);color:#0f4c3a;padding:5px 15px;border-radius:20px;font-size:0.85em;font-weight:bold;margin:5px}
+
+.quiz-container{display:none}
+.attempt-counter{background:linear-gradient(135deg,#fff3e0,#ffe0b2);padding:15px;border-radius:12px;margin:15px 0;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:600;color:#e65100;border:2px solid #d4af37}
+.time-remaining{background:linear-gradient(135deg,#e8f5ee,#c8e6d0);padding:15px;border-radius:12px;margin:15px 0;text-align:center;font-weight:bold;color:#0f4c3a;font-size:1.1em;border:2px solid #1a7a5a}
+.progress-container{background:#e0e0e0;border-radius:10px;height:14px;margin:20px 0;overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,0.1)}
+.progress-bar{background:linear-gradient(90deg,#0f4c3a,#1a7a5a,#d4af37);height:100%;width:0%;transition:width 0.5s ease;border-radius:10px;position:relative;overflow:hidden}
+.progress-bar::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);animation:shimmer 2s infinite}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.progress-info{display:flex;justify-content:space-between;margin-bottom:10px;font-size:0.93em;color:#555;font-weight:600}
+.question-card{background:white;border-radius:18px;padding:28px;margin:20px 0;border-left:6px solid #d4af37;box-shadow:0 10px 30px rgba(0,0,0,0.08);animation:slideIn 0.5s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+.question-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.question-number{background:linear-gradient(135deg,#0f4c3a,#1a7a5a);color:white;padding:7px 16px;border-radius:25px;font-weight:bold;font-size:0.93em;box-shadow:0 3px 10px rgba(15,76,58,0.3)}
+.question-topic{background:#f0f9f4;color:#0f4c3a;padding:7px 16px;border-radius:25px;font-size:0.88em;font-weight:600;border:1px solid #c8e6d0}
+.question-text{font-size:1.08em;line-height:1.7;margin:18px 0;color:#222}
+.math{font-family:'Cambria Math','Times New Roman',serif;font-style:italic;background:#f0f9f4;padding:3px 8px;border-radius:6px;color:#0f4c3a;font-weight:500}
+.options{display:flex;flex-direction:column;gap:11px;margin-top:18px}
+.option{background:white;border:2px solid #e0e0e0;padding:14px 18px;border-radius:12px;cursor:pointer;transition:0.3s;display:flex;align-items:center;gap:14px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.option:hover{border-color:#1a7a5a;background:#f0f9f4;transform:translateX(5px)}
+.option.selected{border-color:#1a7a5a;background:#e8f5ee}
+.option.correct{border-color:#0f4c3a;background:#e8f5ee}
+.option.incorrect{border-color:#c62828;background:#ffebee}
+.option-letter{background:linear-gradient(135deg,#0f4c3a,#1a7a5a);color:white;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0}
+.option.correct .option-letter{background:linear-gradient(135deg,#0f4c3a,#1a7a5a)}
+.option.incorrect .option-letter{background:linear-gradient(135deg,#c62828,#ef5350)}
+.feedback{margin-top:22px;padding:18px;border-radius:12px;display:none;animation:fadeIn 0.4s}
+.feedback.show{display:block}
+.feedback.correct{background:linear-gradient(135deg,#e8f5ee,#c8e6d0);border-left:5px solid #0f4c3a;color:#0a3528}
+.feedback.incorrect{background:linear-gradient(135deg,#ffebee,#ffcdd2);border-left:5px solid #c62828;color:#8b1a1a}
+.feedback h4{margin-bottom:8px;font-size:1.15em}
+.feedback .explanation{font-size:0.96em;line-height:1.65;margin-top:8px}
+.nav-buttons{display:flex;justify-content:space-between;margin-top:28px;flex-wrap:wrap;gap:10px}
+
+.results{text-align:center;padding:20px}
+.score-circle{width:200px;height:200px;border-radius:50%;background:conic-gradient(#0f4c3a var(--score,0%),#e0e0e0 0%);display:flex;align-items:center;justify-content:center;margin:22px auto;position:relative;box-shadow:0 10px 30px rgba(15,76,58,0.3)}
+.score-circle::before{content:'';position:absolute;width:170px;height:170px;background:white;border-radius:50%}
+.score-text{position:relative;z-index:1;font-size:2.4em;font-weight:bold;background:linear-gradient(135deg,#0f4c3a,#d4af37);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.results h2{color:#0f4c3a;margin:15px 0;font-size:1.7em}
+.group-info{background:linear-gradient(135deg,#f0f9f4,#e8f5ee);padding:20px;border-radius:15px;margin:20px 0;text-align:left;border:2px solid #1a7a5a}
+.group-info h3{color:#0f4c3a;margin-bottom:10px}
+.group-info ul{margin-left:20px}
+.group-info li{margin:5px 0;line-height:1.6}
+.warning-box{background:linear-gradient(135deg,#ffebee,#ffcdd2);border-left:5px solid #c62828;padding:20px;border-radius:12px;margin:20px 0;text-align:center}
+.warning-box h3{color:#c62828;margin-bottom:10px}
+@media(max-width:600px){header h1{font-size:1.4em}.content{padding:18px}.question-card{padding:18px}.welcome-title{font-size:1.5em}}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<div class="header-content">
+<div class="logo-container">
+<div class="logo-icon">📊</div>
+<div><h1>Simulador Matemáticas - 3ro Contabilidad</h1><p>Funciones Exponenciales, Logarítmicas y Sucesiones</p></div>
+</div>
+<div class="badge">Msc. Edwin Lliguipuma E. | U.E. Dr. Enrique Noboa Arizaga</div>
+</div>
+</header>
+<div class="content" id="content">
+
+<div id="registerScreen">
+<h2 class="welcome-title">📋 Registro del Grupo de Trabajo</h2>
+<p class="welcome-subtitle">Complete los datos del grupo antes de acceder a la clase y el simulador</p>
+
+<div class="info-banner">
+<h3>⚠️ Importante: Solo 2 intentos permitidos</h3>
+<p>Cada grupo tiene máximo 2 oportunidades para realizar el simulador. Tiempo límite: 30 minutos.</p>
+</div>
+
+<div class="timer-banner">
+⏱️ TIEMPO DISPONIBLE: 30 MINUTOS PARA COMPLETAR LA EVALUACIÓN
+</div>
+
+<div class="class-card">
+<h3>👥 Datos del Grupo</h3>
+<div class="input-group">
+<select id="groupNumber">
+<option value="">Seleccione número de grupo</option>
+<option value="1">Grupo 1</option>
+<option value="2">Grupo 2</option>
+<option value="3">Grupo 3</option>
+<option value="4">Grupo 4</option>
+<option value="5">Grupo 5</option>
+<option value="6">Grupo 6</option>
+<option value="7">Grupo 7</option>
+<option value="8">Grupo 8</option>
+<option value="9">Grupo 9</option>
+<option value="10">Grupo 10</option>
+</select>
+<select id="groupCourse">
+<option value="">Seleccione curso</option>
+<option value="3ERO CONTABILIDAD A">3ERO CONTABILIDAD A</option>
+<option value="3ERO CONTABILIDAD B">3ERO CONTABILIDAD B</option>
+</select>
+</div>
+<div id="membersContainer"></div>
+<div class="input-group">
+<select id="groupSize">
+<option value="">Número de integrantes</option>
+<option value="3">3 integrantes</option>
+<option value="4">4 integrantes</option>
+</select>
+</div>
+<div class="center">
+<button class="btn btn-gold" onclick="registerGroup()">📝 Registrar Grupo y Continuar</button>
+</div>
+</div>
+</div>
+
+<div class="class-container" id="classContainer">
+<h2 class="welcome-title">📚 Clase: Funciones Exponenciales, Logarítmicas y Sucesiones</h2>
+<p class="welcome-subtitle">Aprende los conceptos antes de realizar el simulador</p>
+
+<div class="class-nav">
+<button class="active" onclick="showSection(0)">1. Exponenciales</button>
+<button onclick="showSection(1)">2. Logaritmos</button>
+<button onclick="showSection(2)">3. Logarítmicas</button>
+<button onclick="showSection(3)">4. Ecuaciones</button>
+<button onclick="showSection(4)">5. Sucesiones</button>
+<button onclick="showSection(5)">6. Ejemplos</button>
+</div>
+
+<div class="class-section active" id="section0">
+<div class="class-card">
+<h2> Funciones Exponenciales</h2>
+<p>Una <strong>función exponencial</strong> tiene la forma <span class="math">f(x) = aˣ</span> donde <span class="math">a &gt; 0</span> y <span class="math">a ≠ 1</span>.</p>
+<h3>🔍 Propiedades Fundamentales</h3>
+<ul>
+<li><strong>Dominio:</strong> Todos los reales ℝ</li>
+<li><strong>Recorrido:</strong> (0, +∞) - siempre positivo</li>
+<li><strong>Asíntota horizontal:</strong> y = 0 (eje X)</li>
+<li><strong>Pasa por:</strong> el punto (0, 1)</li>
+</ul>
+<h3>📐 Función Desplazada</h3>
+<p>Cuando la función tiene la forma <span class="math">f(x) = aˣ + k</span>:</p>
+<div class="formula-box">Asíntota horizontal: y = k<br>Recorrido: (k, +∞)</div>
+<h3>📊 Ejemplo: f(x) = 2ˣ - 4</h3>
+<div class="example-box">
+<strong>Análisis:</strong><br>
+• Dominio: ℝ (todos los reales)<br>
+• Asíntota horizontal: y = -4<br>
+• Recorrido: (-4, +∞)<br>
+• Pasa por: (0, -3) porque 2⁰ - 4 = 1 - 4 = -3
+</div>
+<div class="graph-container">
+<div class="graph-title">📈 Gráfica de f(x) = 2ˣ - 4</div>
+<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="20" y1="100" x2="380" y2="100" stroke="#333" stroke-width="1.5"/>
+<line x1="200" y1="180" x2="200" y2="20" stroke="#333" stroke-width="1.5"/>
+<line x1="20" y1="170" x2="380" y2="170" stroke="#c62828" stroke-width="2" stroke-dasharray="5,5"/>
+<text x="340" y="165" font-size="11" fill="#c62828" font-weight="bold">y=-4</text>
+<path d="M 20,168 Q 80,165 140,150 Q 200,120 260,80 Q 320,40 370,25" stroke="#0f4c3a" stroke-width="3" fill="none"/>
+<text x="280" y="190" font-size="12" fill="#0f4c3a" font-weight="bold">f(x) = 2ˣ - 4</text>
+</svg>
+</div>
+<div class="center">
+<button class="btn" onclick="showSection(1)">Siguiente: Logaritmos →</button>
+</div>
+</div>
+</div>
+
+<div class="class-section" id="section1">
+<div class="class-card">
+<h2>🔢 Propiedades de los Logaritmos</h2>
+<p>El <strong>logaritmo</strong> es la operación inversa de la exponenciación: <span class="math">log_a(b) = c</span> significa <span class="math">a = b</span>.</p>
+<h3>📐 Propiedades Fundamentales</h3>
+<div class="formula-box">
+log(a · b) = log(a) + log(b)<br>
+log(a/b) = log(a) - log(b)<br>
+log(aⁿ) = n · log(a)
+</div>
+<h3> Casos Especiales</h3>
+<ul>
+<li><span class="math">log_a(1) = 0</span> (porque a⁰ = 1)</li>
+<li><span class="math">log_a(a) = 1</span> (porque a¹ = a)</li>
+<li><span class="math">log_a(aⁿ) = n</span></li>
+</ul>
+<h3>📊 Ejemplo Resuelto</h3>
+<div class="example-box">
+<strong>Calcular:</strong> E = log₂(8) + log₂(4)<br>
+<strong>Solución:</strong><br>
+• log₂(8) = 3 (porque 2³ = 8)<br>
+• log₂(4) = 2 (porque 2² = 4)<br>
+• E = 3 + 2 = <span class="highlight">5</span>
+</div>
+<div class="center">
+<button class="btn btn-secondary" onclick="showSection(0)">← Anterior</button>
+<button class="btn" onclick="showSection(2)">Siguiente: Logarítmicas →</button>
+</div>
+</div>
+</div>
+
+<div class="class-section" id="section2">
+<div class="class-card">
+<h2>📉 Funciones Logarítmicas</h2>
+<p>La función logarítmica <span class="math">g(x) = log_a(x)</span> es la <strong>inversa</strong> de la función exponencial <span class="math">f(x) = aˣ</span>.</p>
+<h3>🔍 Propiedades</h3>
+<ul>
+<li><strong>Dominio:</strong> (0, +∞) - solo valores positivos</li>
+<li><strong>Recorrido:</strong> ℝ (todos los reales)</li>
+<li><strong>Asíntota vertical:</strong> x = 0 (eje Y)</li>
+<li><strong>Pasa por:</strong> el punto (1, 0)</li>
+</ul>
+<h3>🎯 Simetría</h3>
+<p>La gráfica de <span class="math">g(x) = log_a(x)</span> es simétrica a <span class="math">f(x) = aˣ</span> respecto a la recta <span class="math">y = x</span>.</p>
+<div class="graph-container">
+<div class="graph-title">📊 Simetría entre exponencial y logarítmica</div>
+<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="20" y1="100" x2="380" y2="100" stroke="#333" stroke-width="1.5"/>
+<line x1="200" y1="180" x2="200" y2="20" stroke="#333" stroke-width="1.5"/>
+<line x1="20" y1="180" x2="380" y2="20" stroke="#d4af37" stroke-width="2" stroke-dasharray="5,5"/>
+<text x="340" y="30" font-size="11" fill="#d4af37" font-weight="bold">y=x</text>
+<path d="M 30,170 Q 80,150 140,120 Q 200,90 260,70 Q 320,55 370,52" stroke="#0f4c3a" stroke-width="3" fill="none"/>
+<path d="M 40,170 Q 60,150 80,130 Q 120,100 160,80 Q 200,65 270,50" stroke="#c62828" stroke-width="3" fill="none"/>
+<text x="280" y="190" font-size="11" fill="#0f4c3a" font-weight="bold">2ˣ</text>
+<text x="280" y="60" font-size="11" fill="#c62828" font-weight="bold">log₂(x)</text>
+</svg>
+</div>
+<div class="center">
+<button class="btn btn-secondary" onclick="showSection(1)">← Anterior</button>
+<button class="btn" onclick="showSection(3)">Siguiente: Ecuaciones →</button>
+</div>
+</div>
+</div>
+
+<div class="class-section" id="section3">
+<div class="class-card">
+<h2>⚡ Ecuaciones Exponenciales</h2>
+<p>Para resolver ecuaciones exponenciales, se <strong>igualan las bases</strong> y luego los exponentes.</p>
+<h3>📐 Método de Resolución</h3>
+<div class="formula-box">
+Si a = aⁿ, entonces m = n
+</div>
+<h3>📊 Ejemplos Resueltos</h3>
+<div class="example-box">
+<strong>Ejemplo 1:</strong> Resolver 3ˣ = 81<br>
+• 81 = 3⁴<br>
+• Entonces 3ˣ = 3⁴<br>
+• <span class="highlight">x = 4</span>
+</div>
+<div class="example-box">
+<strong>Ejemplo 2:</strong> Resolver 2ˣ = 64<br>
+• 64 = 2⁶<br>
+• Entonces 2ˣ = 2⁶<br>
+• <span class="highlight">x = 6</span>
+</div>
+<div class="example-box">
+<strong>Ejemplo 3:</strong> Resolver 4ˣ = 8<br>
+• 4 = 2² y 8 = 2³<br>
+• (2²)ˣ = 2³ → 2²ˣ = 2³<br>
+• 2x = 3 → <span class="highlight">x = 3/2</span>
+</div>
+<div class="center">
+<button class="btn btn-secondary" onclick="showSection(2)">← Anterior</button>
+<button class="btn" onclick="showSection(4)">Siguiente: Sucesiones →</button>
+</div>
+</div>
+</div>
+
+<div class="class-section" id="section4">
+<div class="class-card">
+<h2>🧬 Sucesiones - Proyecto STEAM</h2>
+<p>Las <strong>sucesiones</strong> modelan el crecimiento de poblaciones celulares en el proyecto "Cáncer y Autómatas Celulares".</p>
+<h3> Sucesión Geométrica</h3>
+<div class="formula-box">aₙ = a₁ · r^(n-1)</div>
+<p>Donde <span class="math">a₁</span> es el primer término y <span class="math">r</span> es la razón.</p>
+<h3>🔬 Modelos de Proliferación</h3>
+<ul>
+<li><strong>Si se duplica:</strong> r = 2, fórmula: aₙ = a₁ · 2^(n-1)</li>
+<li><strong>Si se triplica:</strong> r = 3, fórmula: aₙ = a₁ · 3^(n-1)</li>
+</ul>
+<h3>📊 Tabla de Crecimiento (a₁ = 2, se triplica)</h3>
+<table style="width:100%;border-collapse:collapse;margin:15px 0">
+<thead>
+<tr style="background:linear-gradient(135deg,#0f4c3a,#1a7a5a);color:white">
+<th style="padding:10px;border:1px solid #ddd">Etapa (n)</th>
+<th style="padding:10px;border:1px solid #ddd">Cálculo</th>
+<th style="padding:10px;border:1px solid #ddd">Células</th>
+</tr>
+</thead>
+<tbody>
+<tr><td style="padding:10px;border:1px solid #ddd;text-align:center">1</td><td style="padding:10px;border:1px solid #ddd">2 · 3⁰</td><td style="padding:10px;border:1px solid #ddd;text-align:center"><strong>2</strong></td></tr>
+<tr style="background:#f0f9f4"><td style="padding:10px;border:1px solid #ddd;text-align:center">2</td><td style="padding:10px;border:1px solid #ddd">2 · 3¹</td><td style="padding:10px;border:1px solid #ddd;text-align:center"><strong>6</strong></td></tr>
+<tr><td style="padding:10px;border:1px solid #ddd;text-align:center">3</td><td style="padding:10px;border:1px solid #ddd">2 · 3²</td><td style="padding:10px;border:1px solid #ddd;text-align:center"><strong>18</strong></td></tr>
+<tr style="background:#f0f9f4"><td style="padding:10px;border:1px solid #ddd;text-align:center">4</td><td style="padding:10px;border:1px solid #ddd">2 · 3³</td><td style="padding:10px;border:1px solid #ddd;text-align:center"><strong>54</strong></td></tr>
+</tbody>
+</table>
+<div class="center">
+<button class="btn btn-secondary" onclick="showSection(3)">← Anterior</button>
+<button class="btn" onclick="showSection(5)">Siguiente: Ejemplos →</button>
+</div>
+</div>
+</div>
+
+<div class="class-section" id="section5">
+<div class="class-card">
+<h2>📝 Ejemplos Integradores</h2>
+<h3>Ejemplo 1: Función Exponencial</h3>
+<div class="example-box">
+<strong>Problema:</strong> Para f(x) = 2ˣ - 4, determine dominio, recorrido y asíntota.<br><br>
+<strong>Solución:</strong><br>
+• Dominio: ℝ<br>
+• Asíntota: y = -4<br>
+• Recorrido: (-4, +∞)
+</div>
+<h3>Ejemplo 2: Logaritmos</h3>
+<div class="example-box">
+<strong>Problema:</strong> Simplificar log₃(27) - log(3)<br><br>
+<strong>Solución:</strong><br>
+• log₃(27) = 3 (3³ = 27)<br>
+• log₃(3) = 1<br>
+• Resultado: 3 - 1 = <span class="highlight">2</span>
+</div>
+<h3>Ejemplo 3: Ecuación Exponencial</h3>
+<div class="example-box">
+<strong>Problema:</strong> Resolver 2ˣ = 64<br><br>
+<strong>Solución:</strong><br>
+• 64 = 2<br>
+• <span class="highlight">x = 6</span>
+</div>
+<h3>Ejemplo 4: Sucesión (STEAM)</h3>
+<div class="example-box">
+<strong>Problema:</strong> Células que se triplican con a₁ = 2. Hallar a₄ y la fórmula.<br><br>
+<strong>Solución:</strong><br>
+• r = 3, fórmula: aₙ = 2 · 3^(n-1)<br>
+• a₄ = 2 · 3³ = 2 · 27 = <span class="highlight">54 células</span>
+</div>
+<div class="info-banner" style="margin-top:20px">
+<h3>🎓 ¡Listo para el simulador!</h3>
+<p>Has completado la clase. Ahora realiza el simulador con 10 preguntas. Recuerda: solo tienes 2 intentos y 30 minutos.</p>
+</div>
+<div class="center">
+<button class="btn btn-secondary" onclick="showSection(4)">← Anterior</button>
+<button class="btn btn-gold" onclick="startQuiz()">🚀 Iniciar Simulador (10 preguntas / 10 puntos)</button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="quiz-container" id="quizContainer">
+<div class="attempt-counter" id="attemptCounter">
+ Intentos restantes: <span id="attemptsLeft">2</span> de 2
+</div>
+<div class="time-remaining" id="timeRemaining">
+⏱️ Tiempo restante: <span id="timer">30:00</span>
+</div>
+<div class="progress-info">
+<span id="progressText">Pregunta 1 de 10</span>
+<span id="scoreText">Puntaje: 0 / 10</span>
+</div>
+<div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+<div id="questionContainer"></div>
+<div class="nav-buttons">
+<button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← Anterior</button>
+<button class="btn" id="nextBtn" onclick="nextQuestion()">Siguiente →</button>
+<button class="btn btn-gold" id="finishBtn" onclick="finishQuiz()" style="display:none">✅ Finalizar</button>
+</div>
+</div>
+
+<div id="resultsScreen" style="display:none"></div>
+
+</div>
+</div>
+
+<script>
+let groupData = {number:'',course:'',size:0,members:[],attempts:0,startTime:null,endTime:null};
+
+const questions = [
+{type:'mc',topic:'Función Exponencial',text:'Dada la función f(x) = 2ˣ - 4, ¿cuál es su asíntota horizontal?',options:['y = 0','y = 4','y = -4','y = 2'],answer:2,explanation:'Cuando x tiende a -∞, 2ˣ tiende a 0, entonces f(x) tiende a 0 - 4 = -4. Asíntota: y = -4.'},
+{type:'mc',topic:'Dominio Exponencial',text:'¿Cuál es el dominio de f(x) = 2ˣ - 4?',options:['(0, +∞)','(-4, +)','ℝ (todos los reales)','[0, +∞)'],answer:2,explanation:'Toda función exponencial tiene dominio ℝ, ya que se puede elevar una base positiva a cualquier exponente real.'},
+{type:'mc',topic:'Propiedades Logaritmos',text:'El valor de log₂(8) + log₂(4) es:',options:['5','4','32','log₂(32)'],answer:0,explanation:'log₂(8) = 3 (2³=8) y log₂(4) = 2 (2²=4). Entonces 3 + 2 = 5.'},
+{type:'mc',topic:'Logaritmo de Cociente',text:'El valor de log₃(27) - log₃(3) es:',options:['1','2','3','9'],answer:1,explanation:'log₃(27) = 3 (3³=27) y log₃(3) = 1. Entonces 3 - 1 = 2.'},
+{type:'mc',topic:'Función Logarítmica',text:'¿Cuál es el dominio de g(x) = log₃(x)?',options:['','(0, +∞)','[1, +∞)','(-∞, 0)'],answer:1,explanation:'El logaritmo solo está definido para argumentos positivos. Dominio: (0, +∞).'},
+{type:'mc',topic:'Simetría Log-Exp',text:'Las gráficas de f(x) = 3ˣ y g(x) = log₃(x) son simétricas respecto a:',options:['El eje X','El eje Y','La recta y = x','El origen'],answer:2,explanation:'Toda función y su inversa son simétricas respecto a la recta y = x (bisectriz del primer y tercer cuadrante).'},
+{type:'mc',topic:'Ecuación Exponencial',text:'Resolver: 2ˣ = 64. El valor de x es:',options:['4','5','6','7'],answer:2,explanation:'64 = 2⁶, entonces 2ˣ = 2⁶, por lo tanto x = 6.'},
+{type:'mc',topic:'Ecuación con Base 3',text:'Resolver: 3ˣ = 81. El valor de x es:',options:['2','3','4','5'],answer:2,explanation:'81 = 3⁴, entonces 3 = 3⁴, por lo tanto x = 4.'},
+{type:'mc',topic:'Sucesión STEAM',text:'Si a₁ = 2 células y se TRIPLICAN en cada etapa, ¿cuántas hay en a?',options:['18','24','54','162'],answer:2,explanation:'a₄ = 2 · 3³ = 2 · 27 = 54 células. Fórmula: aₙ = 2 · 3^(n-1).'},
+{type:'mc',topic:'Fórmula Explícita',text:'Para células que se triplican con a₁ = 2, la fórmula explícita es:',options:['aₙ = 2 · 2^(n-1)','aₙ = 2 · 3^(n-1)','aₙ = 3 · 2^(n-1)','aₙ = 2 + 3n'],answer:1,explanation:'Como se triplica, r = 3. La fórmula es aₙ = a₁ · r^(n-1) = 2 · 3^(n-1).'}
+];
+
+let currentQuestion = 0;
+let userAnswers = new Array(questions.length).fill(null);
+let score = 0;
+let timeLeft = 30 * 60;
+let timerInterval = null;
+
+function updateMemberInputs() {
+    const size = parseInt(document.getElementById('groupSize').value);
+    const container = document.getElementById('membersContainer');
+    container.innerHTML = '';
+    if (!size) return;
+    for (let i = 1; i <= size; i++) {
+        const row = document.createElement('div');
+        row.className = 'member-row';
+        row.innerHTML = '<input type="text" id="member' + i + '" placeholder="Nombre del integrante ' + i + '" />';
+        container.appendChild(row);
+    }
+}
+
+document.getElementById('groupSize').addEventListener('change', updateMemberInputs);
+
+function registerGroup() {
+    const number = document.getElementById('groupNumber').value;
+    const course = document.getElementById('groupCourse').value;
+    const size = parseInt(document.getElementById('groupSize').value);
+    
+    if (!number) { alert('⚠️ Seleccione el número de grupo.'); return; }
+    if (!course) { alert('⚠️ Seleccione el curso.'); return; }
+    if (!size) { alert('️ Seleccione el número de integrantes.'); return; }
+    
+    const members = [];
+    for (let i = 1; i <= size; i++) {
+        const memberName = document.getElementById('member' + i).value.trim();
+        if (!memberName) { alert('⚠️ Ingresa el nombre del integrante ' + i + '.'); return; }
+        members.push(memberName);
+    }
+    
+    const storageKey = 'steam_cont_' + number + '_' + course;
+    const prevAttempts = parseInt(localStorage.getItem(storageKey) || '0');
+    
+    if (prevAttempts >= 2) {
+        alert('⛔ El Grupo ' + number + ' de ' + course + ' ya realizó los 2 intentos permitidos.');
+        return;
+    }
+    
+    groupData = {number: number, course: course, size: size, members: members, attempts: prevAttempts, startTime: new Date(), endTime: null};
+    
+    document.getElementById('registerScreen').style.display = 'none';
+    document.getElementById('classContainer').style.display = 'block';
+    document.getElementById('attemptsLeft').textContent = 2 - prevAttempts;
+}
+
+function showSection(idx) {
+    const sections = document.querySelectorAll('.class-section');
+    const buttons = document.querySelectorAll('.class-nav button');
+    sections.forEach(function(s, i) { s.classList.toggle('active', i === idx); });
+    buttons.forEach(function(b, i) { b.classList.toggle('active', i === idx); });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startQuiz() {
+    document.getElementById('classContainer').style.display = 'none';
+    document.getElementById('quizContainer').style.display = 'block';
+    currentQuestion = 0;
+    userAnswers = new Array(questions.length).fill(null);
+    score = 0;
+    timeLeft = 30 * 60;
+    groupData.startTime = new Date();
+    startTimer();
+    renderQuestion();
+}
+
+function startTimer() {
+    timerInterval = setInterval(function() {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById('timer').textContent = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            alert('⏰ ¡Se acabó el tiempo! El simulador se cerrará automáticamente.');
+            finishQuiz(true);
+        }
+        
+        if (timeLeft <= 300) {
+            document.getElementById('timeRemaining').style.background = 'linear-gradient(135deg,#ffcdd2,#ef9a9a)';
+            document.getElementById('timeRemaining').style.color = '#c62828';
+        }
+    }, 1000);
+}
+
+function renderQuestion() {
+    const q = questions[currentQuestion];
+    const container = document.getElementById('questionContainer');
+    let html = '<div class="question-card">';
+    html += '<div class="question-header">';
+    html += '<span class="question-number">Pregunta ' + (currentQuestion + 1) + ' / 10</span>';
+    html += '<span class="question-topic">📌 ' + q.topic + '</span>';
+    html += '</div>';
+    html += '<div class="question-text">' + q.text + '</div>';
+    
+    html += '<div class="options">';
+    const letters = ['A', 'B', 'C', 'D'];
+    for (let i = 0; i < q.options.length; i++) {
+        const selected = userAnswers[currentQuestion] === i ? 'selected' : '';
+        html += '<div class="option ' + selected + '" onclick="selectOption(' + i + ')">';
+        html += '<span class="option-letter">' + letters[i] + '</span>';
+        html += '<span>' + q.options[i] + '</span>';
+        html += '</div>';
+    }
+    html += '</div>';
+    
+    if (userAnswers[currentQuestion] !== null) {
+        const isCorrect = checkAnswer();
+        const feedbackClass = isCorrect ? 'correct' : 'incorrect';
+        const feedbackTitle = isCorrect ? '✅ ¡Correcto! (+1 punto)' : '❌ Incorrecto (0 puntos)';
+        html += '<div class="feedback show ' + feedbackClass + '">';
+        html += '<h4>' + feedbackTitle + '</h4>';
+        html += '<div class="explanation"><strong>📖 Justificación analítica:</strong> ' + q.explanation + '</div>';
+        html += '</div>';
+    }
+    
+    html += '</div>';
+    container.innerHTML = html;
+    
+    document.getElementById('progressText').textContent = 'Pregunta ' + (currentQuestion + 1) + ' de 10';
+    document.getElementById('scoreText').textContent = 'Puntaje: ' + score + ' / 10';
+    document.getElementById('progressBar').style.width = ((currentQuestion + 1) / 10 * 100) + '%';
+    document.getElementById('prevBtn').disabled = currentQuestion === 0;
+    
+    if (currentQuestion === questions.length - 1) {
+        document.getElementById('nextBtn').style.display = 'none';
+        document.getElementById('finishBtn').style.display = 'inline-block';
+    } else {
+        document.getElementById('nextBtn').style.display = 'inline-block';
+        document.getElementById('finishBtn').style.display = 'none';
+    }
+}
+
+function selectOption(i) {
+    if (userAnswers[currentQuestion] !== null) return;
+    userAnswers[currentQuestion] = i;
+    if (checkAnswer()) score++;
+    renderQuestion();
+}
+
+function checkAnswer() {
+    return userAnswers[currentQuestion] === questions[currentQuestion].answer;
+}
+
+function nextQuestion() {
+    if (userAnswers[currentQuestion] === null) {
+        alert('⚠️ Debes responder la pregunta antes de continuar.');
+        return;
+    }
+    if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        renderQuestion();
+    }
+}
+
+function prevQuestion() {
+    if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+    }
+}
+
+function finishQuiz(timeExpired) {
+    if (!timeExpired && !confirm('¿Estás seguro de finalizar el simulador? Esta acción registrará el intento.')) return;
+    
+    clearInterval(timerInterval);
+    groupData.endTime = new Date();
+    
+    const storageKey = 'steam_cont_' + groupData.number + '_' + groupData.course;
+    const newAttempts = groupData.attempts + 1;
+    localStorage.setItem(storageKey, newAttempts.toString());
+    
+    const attemptData = {
+        groupNumber: groupData.number,
+        course: groupData.course,
+        members: groupData.members,
+        size: groupData.size,
+        attempt: newAttempts,
+        score: score,
+        startTime: groupData.startTime.toISOString(),
+        endTime: groupData.endTime.toISOString(),
+        date: groupData.startTime.toLocaleDateString('es-EC'),
+        time: groupData.startTime.toLocaleTimeString('es-EC')
+    };
+    
+    const allAttempts = JSON.parse(localStorage.getItem('steam_cont_all') || '[]');
+    allAttempts.push(attemptData);
+    localStorage.setItem('steam_cont_all', JSON.stringify(allAttempts));
+    
+    document.getElementById('quizContainer').style.display = 'none';
+    const results = document.getElementById('resultsScreen');
+    results.style.display = 'block';
+    
+    const percentage = score * 10;
+    let message = '', emoji = '';
+    if (score >= 9) { message = '¡Excelente desempeño! Dominan los temas.'; emoji = '🏆'; }
+    else if (score >= 7) { message = 'Muy buen trabajo. Sigue practicando.'; emoji = '🌟'; }
+    else if (score >= 6) { message = 'Buen esfuerzo. Refuercen algunos conceptos.'; emoji = '👍'; }
+    else if (score >= 5) { message = 'Necesitan repasar la clase. ¡No se rindan!'; emoji = '📚'; }
+    else { message = 'Deben estudiar más el tema. ¡Tú pueden!'; emoji = ''; }
+    
+    let membersHTML = '<ul>';
+    groupData.members.forEach(function(m, i) { membersHTML += '<li><strong>Integrante ' + (i+1) + ':</strong> ' + m + '</li>'; });
+    membersHTML += '</ul>';
+    
+    let detailHTML = '';
+    for (let i = 0; i < questions.length; i++) {
+        const q = questions[i];
+        const ok = userAnswers[i] === q.answer;
+        const userResp = userAnswers[i] !== null ? q.options[userAnswers[i]] : 'Sin responder';
+        const correctResp = q.options[q.answer];
+        detailHTML += '<div style="background:white;padding:16px;margin:10px 0;border-radius:12px;border-left:5px solid ' + (ok ? '#0f4c3a' : '#c62828') + ';box-shadow:0 3px 10px rgba(0,0,0,0.05)">';
+        detailHTML += '<strong>P' + (i+1) + '. ' + q.topic + '</strong> ' + (ok ? '✅' : '❌') + ' - ' + (ok ? '1 punto' : '0 puntos') + '<br>';
+        detailHTML += '<small>Tu respuesta: ' + userResp + '</small>';
+        if (!ok) {
+            detailHTML += '<br><small style="color:#0f4c3a"><strong>Respuesta correcta:</strong> ' + correctResp + '</small>';
+        }
+        detailHTML += '</div>';
+    }
+    
+    const attemptsLeft = 2 - newAttempts;
+    const attemptsWarning = attemptsLeft > 0 
+        ? '<div class="attempt-counter">📊 Intentos restantes: ' + attemptsLeft + ' de 2</div>'
+        : '<div class="warning-box"><h3>⛔ Intentos agotados</h3><p>Este grupo ya utilizó sus 2 intentos permitidos.</p></div>';
+    
+    results.innerHTML = '<div class="results">' +
+        '<h2>' + emoji + ' Resultados del Simulador<br>3ro Contabilidad</h2>' +
+        '<div class="group-info">' +
+        '<h3>👥 Datos del Grupo</h3>' +
+        '<p><strong>Grupo:</strong> ' + groupData.number + '</p>' +
+        '<p><strong>Curso:</strong> ' + groupData.course + '</p>' +
+        '<p><strong>Fecha:</strong> ' + attemptData.date + '</p>' +
+        '<p><strong>Hora de inicio:</strong> ' + attemptData.time + '</p>' +
+        '<p><strong>Número de integrantes:</strong> ' + groupData.size + '</p>' +
+        membersHTML +
+        '</div>' +
+        '<div class="score-circle" style="--score:' + percentage + '%"><div class="score-text">' + score + '/10</div></div>' +
+        '<h3 style="color:#0f4c3a">Nota: ' + score.toFixed(1) + ' / 10 (' + percentage.toFixed(0) + '%)</h3>' +
+        '<p style="font-size:1.1em;margin:15px 0">' + message + '</p>' +
+        attemptsWarning +
+        '<h3 style="color:#0f4c3a;margin-top:30px">📝 Detalle de Respuestas</h3>' +
+        '<div class="review-list">' + detailHTML + '</div>' +
+        '<br><button class="btn btn-secondary" onclick="window.print()">🖨 Imprimir Resultados para el Docente</button>' +
+        (attemptsLeft > 0 ? '<button class="btn btn-gold" onclick="location.reload()">🔄 Realizar otro intento</button>' : '') +
+        '</div>';
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
